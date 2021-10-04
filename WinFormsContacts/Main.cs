@@ -26,7 +26,7 @@ namespace WinFormsContacts
         #region EVENTS
         private void buttonAnadir_Click(object sender, EventArgs e)
         {
-            return;
+            openDetallesDialog();
         }
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
