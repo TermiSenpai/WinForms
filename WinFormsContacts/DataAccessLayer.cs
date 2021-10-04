@@ -9,7 +9,8 @@ namespace WinFormsContacts
 {
     class DataAccessLayer
     {
-        private SqlConnection conn = new SqlConnection("");
+        private static string conexionName = "Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=Contacts;Data Source=DESKTOP-VBU73D2\\SQLEXPRESS";
+        private SqlConnection conn = new SqlConnection(conexionName);
 
         public void InsertContacto(Contacto contacto)
         {
@@ -20,7 +21,7 @@ namespace WinFormsContacts
             {
                 conn.Open();
                 string query = @"
-                    INSERT INTO Contactos (Nombre, Apellidos, Telefono, Direccion)
+                    INSERT INTO Contacts (FirstName, LastName, Phone, Address)
                     VALUES (@Nombre, @Apellidos, @Telefono, @Direccion);
                 ";
 
@@ -62,19 +63,18 @@ namespace WinFormsContacts
             //return returnValue;
         }
 
-
         public void UpdateContacto(Contacto contacto)
         {
             try
             {
                 conn.Open();
                 string query = @"
-                    UPDATE Contactos SET
-                        Nombre = @Nombre,
-                        Apellidos = @Apellidos, 
-                        Telefono = @Telefono, 
-                        Direccion = @Direccion
-                    WHERE id = @Id
+                    UPDATE Contacts SET
+                        FirstName = @Nombre,
+                        LastName = @Apellidos, 
+                        Phone = @Telefono, 
+                        Address = @Direccion
+                    WHERE ID = @Id
                 ";
 
                 SqlParameter id = new SqlParameter("@Id", contacto.Id);
@@ -112,8 +112,8 @@ namespace WinFormsContacts
             {
                 conn.Open();
                 string query = @"
-                    SELECT id, Nombre, Apellidos, Telefono, Direccion
-                    FROM Contactos
+                    SELECT ID, FirstName, LastName, Phone, Address
+                    FROM Contacts
                 ";
 
                 SqlCommand sqlCommand = new SqlCommand(query, conn);
@@ -121,10 +121,10 @@ namespace WinFormsContacts
                 if (!string.IsNullOrEmpty(searchString))
                 {
                     query += @"
-                        WHERE Nombre LIKE @searchString
-                        OR Apellidos LIKE @searchString
-                        OR Telefono LIKE @searchString
-                        OR Direccion LIKE @searchString
+                        WHERE FirstName LIKE @searchString
+                        OR LastName LIKE @searchString
+                        OR Phone LIKE @searchString
+                        OR Address LIKE @searchString
                     ";
 
                     sqlCommand.Parameters.Add(new SqlParameter("@SearchString", $"%{searchString}%"));
@@ -139,11 +139,11 @@ namespace WinFormsContacts
                 {
                     contactos.Add(new Contacto
                     {
-                        Id = int.Parse(reader["id"].ToString()),
-                        Nombre = reader["Nombre"].ToString(),
-                        Apellidos = reader["Apellidos"].ToString(),
-                        Telefono = reader["Telefono"].ToString(),
-                        Direccion = reader["Direccion"].ToString()
+                        Id = int.Parse(reader["ID"].ToString()),
+                        Nombre = reader["FirstName"].ToString(),
+                        Apellidos = reader["LastName"].ToString(),
+                        Telefono = reader["Phone"].ToString(),
+                        Direccion = reader["Address"].ToString()
                     });
                 }
             }
@@ -165,7 +165,7 @@ namespace WinFormsContacts
             try
             {
                 conn.Open();
-                string query = @"DELETE FROM Contactos WHERE id = @Id";
+                string query = @"DELETE FROM Contacts WHERE ID = @Id";
 
                 SqlCommand command = new SqlCommand(query, conn);
                 command.Parameters.Add(new SqlParameter("@Id", id));
